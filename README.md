@@ -1,1 +1,0 @@
-# IntelligentEquipmentMonitorAndWarningCenter-master
