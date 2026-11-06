@@ -1,0 +1,4 @@
+存储目录：E:\智能设备监控预警中心\DBbase
+数据文件：DeviceDBase.sqlite
+通信配置文件：CommunicateSet.txt
+预警配置文件：AlarmSets.txt
