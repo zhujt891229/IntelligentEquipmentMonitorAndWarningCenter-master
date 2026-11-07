@@ -1,5 +1,7 @@
 ﻿using Helper;
 using IEMAWC.DAL.Helper;
+using NPOI.SS.Formula.Functions;
+using SqlSugar;
 using System;
 using System.Data;
 using System.Data.SQLite;
@@ -108,13 +110,38 @@ namespace IEMAWC.DAL
             object result = SQLiteHelper.ExecuteScalar(sql, paras.ToArray());
             return result != null ? Convert.ToInt32(result) : 0;
             */
-            int count = SQLHelper.Instance.Queryable<AlarmLog>().Where(a => a.AlarmType == alarmType
-                && (states == null || states.Count == 0 || states.Contains(a.AlarmState))
-                && (infoType == -1 || a.InfoType == infoType)
-                && (string.IsNullOrEmpty(startStr) || DateTime.Parse(a.AlarmTime) >= DateTime.Parse(startStr))
-                && (string.IsNullOrEmpty(endStr) || DateTime.Parse(a.AlarmTime) <= DateTime.Parse(endStr)))
-                .Count();
-            return count;
+            
+            // 1. 初始化查询
+            var query = SQLHelper.Instance.Queryable<AlarmLog>()
+                .Where(it => it.AlarmType == alarmType); // 基础条件：AlarmType
+
+            // 2. 动态条件：报警状态 (多选 IN)
+            // WhereIF: 只有当 states 不为空且包含元素时才添加条件
+            // In: SqlSugar 会自动将其转换为参数化查询 (@p0, @p1...)，防止注入
+            if (states != null && states.Any())
+            {
+                query = query.Where(it => states.Contains(it.AlarmState));
+            }
+
+            // 3. 动态条件：报警来源 (InfoType)
+            // 假设 -1 代表“全部”，其他值代表特定类型
+            if (infoType != -1)
+            {
+                query = query.Where(it => it.InfoType == infoType);
+            }
+
+            // 4. 动态条件：时间范围
+            // 建议将字符串转换为 DateTime 进行比较，确保类型安全
+            if (!string.IsNullOrEmpty(startStr) && !string.IsNullOrEmpty(endStr))
+            {
+                if (DateTime.TryParse(startStr, out DateTime startTime) &&
+                    DateTime.TryParse(endStr, out DateTime endTime))
+                {
+                    query = query.Where(it => DateTime.Parse(it.AlarmTime) >= startTime && DateTime.Parse(it.AlarmTime) <= endTime);
+                }
+            }
+            // 5. 执行计数
+            return query.Count();
         }
 
         /// <summary>
@@ -180,16 +207,86 @@ namespace IEMAWC.DAL
 
             return SQLiteHelper.GetDataTable(sql, paras.ToArray());
             */
-            DataTable dataTable = SQLHelper.Instance.Queryable<AlarmLog>().Where(a => a.AlarmType == alarmType
-                && (states == null || states.Count == 0 || states.Contains(a.AlarmState))
-                && (infoType == -1 || a.InfoType == infoType)
-                && (string.IsNullOrEmpty(startStr) || DateTime.Parse(a.AlarmTime) >= DateTime.Parse(startStr))
-                && (string.IsNullOrEmpty(endStr) || DateTime.Parse(a.AlarmTime) <= DateTime.Parse(endStr)))
-                .OrderByDescending(a => a.AlarmTime)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToDataTable();
-            return dataTable;
+            // 1. 白名单校验表名
+            string tableName = "AlarmLog";
+
+            // 2. 构建动态条件列表
+            var conditions = new List<IConditionalModel>();
+
+            // 基础条件
+            conditions.Add(new ConditionalModel
+            {
+                FieldName = "AlarmType",
+                ConditionalType = ConditionalType.Equal,
+                FieldValue = alarmType.ToString()
+            });
+
+            // 动态 IN 条件
+            if (states != null && states.Any())
+            {
+                // 注意：In 条件需要特殊处理，这里使用 Where 字符串拼接更安全
+                // 或者使用 query.In("AlarmState", states.ToArray())
+            }
+
+            // 3. 构建查询对象
+            var query = SQLHelper.Instance.Queryable<dynamic>()
+                .AS(tableName)
+                .Where(conditions);
+
+            // 4. 处理动态 IN 条件 (使用 In 扩展方法，自动参数化)
+            if (states != null && states.Any())
+            {
+                query = query.In("AlarmState", states.ToArray());
+            }
+
+            // 5. 处理其他动态条件
+            if (infoType != -1)
+            {
+                query = query.Where("InfoType = @InfoType", new { InfoType = infoType });
+            }
+
+            if (!string.IsNullOrEmpty(startStr) && !string.IsNullOrEmpty(endStr))
+            {
+                query = query.Where("AlarmTime >= @StartTime AND AlarmTime <= @EndTime", new
+                {
+                    StartTime = startStr,
+                    EndTime = endStr
+                });
+            }
+
+            // 6. 定义 Select 字段 (保留原 SQL 中的 CASE WHEN 逻辑)
+            string selectSql = @"
+        LogId, 
+        AlarmTime, 
+        AlarmValue, 
+        AlarmNote,
+        CASE InfoType 
+            WHEN 0 THEN '温度'
+            WHEN 1 THEN '湿度'
+            WHEN 2 THEN '亮度'
+            ELSE '未知' 
+        END AS InfoTypeName,
+        CASE AlarmState 
+            WHEN '1' THEN '高值异常'
+            WHEN '0' THEN '低值异常'
+            WHEN '2' THEN '取消高值异常'
+            WHEN '3' THEN '取消低值异常'
+            ELSE '未知' 
+        END AS AlarmStateName,
+        CASE AlarmType
+            WHEN 0 THEN '实时报警'
+            WHEN 1 THEN '历史报警'
+            ELSE '未知'
+        END AS AlarmTypeName";
+
+            // 7. 执行分页查询
+            var list = query
+                .OrderBy("AlarmTime DESC")
+                .Select(selectSql)
+                .ToPageList(pageIndex, pageSize);
+
+            // 8. 转换为 DataTable
+            return SQLHelper.Instance.Utilities.ListToDataTable(list);
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,9 +41,11 @@ namespace IEMAWC.DAL.Helper
                             {
                                 db.Aop.OnLogExecuting = (sql, pars) =>
                                 {
-                                    //Console.WriteLine(sql + "\r\n" +
-                                    //db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-                                    Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
+                                    //Debug.WriteLine("----------");
+                                    Debug.WriteLine(sql + "\r\n" +
+                                    db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
+                                    
+                                    //Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
                                 };
                             });
                         }

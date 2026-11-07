@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Dm.Config;
+using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,7 @@ namespace IEMAWC.DAL
 {
     public class DataInfo
     {
+        [SugarColumn(IsPrimaryKey =true,IsIdentity =true)]
         public int Id { get; set; }
         public string CollectionTime { get; set; }
         public double Temperature { get; set; }

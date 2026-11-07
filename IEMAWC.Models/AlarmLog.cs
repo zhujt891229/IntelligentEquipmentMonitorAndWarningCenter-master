@@ -1,10 +1,12 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 
 namespace IEMAWC.DAL
 {
     // 报警信息实体类，对应数据库表
     public class AlarmLog
     {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int LogId { get; set; }            // 主键自增，插入时通常不需要赋值
         public int InfoType { get; set; }         // 报警类型 0 温度，1 湿度，2 亮度
         public string AlarmTime { get; set; }     // 报警时间

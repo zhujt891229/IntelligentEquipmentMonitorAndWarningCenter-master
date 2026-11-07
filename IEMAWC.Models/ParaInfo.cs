@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SqlSugar;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace IntelligentEquipmentMonitorAndWarningCenter
 {
     public class ParaInfo
     {
+        [SugarColumn(IsPrimaryKey = true, IsIdentity = true)]
         public int Id { get; set; }
         public string ParaName { get; set; }
         public byte FunctionCode { get; set; }
