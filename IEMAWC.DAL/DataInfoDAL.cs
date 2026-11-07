@@ -8,7 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Base;
 using Helper;
+using IEMAWC.DAL.Helper;
 using NPOI.SS.Formula.Functions;
+using SqlSugar;
 
 namespace IEMAWC.DAL
 {
@@ -82,31 +84,41 @@ namespace IEMAWC.DAL
         private const string Cols = "Id,CollectionTime,Temperature,Humidity,Brightness";
         public List<DataInfo> GetDataInfos(DateTime start, DateTime end)
         {
+            /*
             string sql = $"select {Cols} from DataInfos where CollectionTime>=@start and CollectionTime<=@end order by Id";
             SQLiteDataReader dr = SQLiteHelper.ExecuteReader(sql, BuildTimeParas(start, end));
             return DbConvert.DataReaderToList<DataInfo>(dr, Cols);
+            */
+            return SQLHelper.Instance.Queryable<DataInfo>().Where(it => DateTime.Parse(it.CollectionTime) >= start && DateTime.Parse(it.CollectionTime) <= end).OrderBy(it => it.Id).ToList();
         }
 
         public List<DataInfo> GetLatestDataInfos(int count)
         {
+            /*
             string sql = $"select {Cols} from DataInfos order by Id desc limit {count}";
             SQLiteDataReader dr = SQLiteHelper.ExecuteReader(sql);
             List<DataInfo> list = DbConvert.DataReaderToList<DataInfo>(dr, Cols);
             list.Reverse();//倒序取出后再反转，最终按时间升序排列，便于绘制曲线
             return list;
+            */
+            return SQLHelper.Instance.Queryable<DataInfo>().OrderBy(it => it.Id, SqlSugar.OrderByType.Desc).Take(count).ToList().Reverse<DataInfo>().ToList();
         }
 
         public List<DataInfo> GetDataInfosByPage(DateTime start, DateTime end, int pageIndex, int pageSize)
         {
+            /*
             int offset = (pageIndex - 1) * pageSize;
             string sql = $"select {Cols} from DataInfos where CollectionTime>=@start and CollectionTime<=@end " +
                          $"order by Id desc limit {pageSize} offset {offset}";
             SQLiteDataReader dr = SQLiteHelper.ExecuteReader(sql, BuildTimeParas(start, end));
             return DbConvert.DataReaderToList<DataInfo>(dr, Cols);
+            */
+            return SQLHelper.Instance.Queryable<DataInfo>().Where(it => DateTime.Parse(it.CollectionTime) >= start && DateTime.Parse(it.CollectionTime) <= end).OrderBy(it => it.Id, SqlSugar.OrderByType.Desc).ToPageList(pageIndex, pageSize);
         }
 
         public int GetDataCount(DateTime start, DateTime end)
         {
+            /*
             string sql = "select count(1) from DataInfos where CollectionTime>=@start and CollectionTime<=@end";
             object oCount = SQLiteHelper.ExecuteScalar(sql, BuildTimeParas(start, end));
             if (oCount != null && oCount != DBNull.Value)
@@ -114,10 +126,13 @@ namespace IEMAWC.DAL
                 return Convert.ToInt32(oCount);
             }
             return 0;
+            */
+            return SQLHelper.Instance.Queryable<DataInfo>().Where(it => DateTime.Parse(it.CollectionTime) >= start && DateTime.Parse(it.CollectionTime) <= end).Count();
         }
 
         public (double avgT, double avgH, double avgB) GetDataAverage(DateTime start, DateTime end)
         {
+            /*
             string sql = "select ifnull(avg(Temperature),0) as avgT,ifnull(avg(Humidity),0) as avgH," +
                          "ifnull(avg(Brightness),0) as avgB from DataInfos " +
                          "where CollectionTime>=@start and CollectionTime<=@end";
@@ -128,6 +143,9 @@ namespace IEMAWC.DAL
                 return (Convert.ToDouble(row["avgT"]), Convert.ToDouble(row["avgH"]), Convert.ToDouble(row["avgB"]));
             }
             return (0, 0, 0);
+            */
+            var value = SQLHelper.Instance.Queryable<DataInfo>().Where(it => DateTime.Parse(it.CollectionTime) >= start && DateTime.Parse(it.CollectionTime) <= end).Select(it => new {AvgT=SqlFunc.AggregateAvg(it.Temperature), AvgH = SqlFunc.AggregateAvg(it.Humidity), AvgB = SqlFunc.AggregateAvg(it.Brightness) }).First();
+            return (value.AvgT, value.AvgH, value.AvgB);
         }
 
         private static SQLiteParameter[] BuildTimeParas(DateTime start, DateTime end)

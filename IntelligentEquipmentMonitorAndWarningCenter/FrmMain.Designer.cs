@@ -36,8 +36,8 @@
             lblLoginUser = new Label();
             panel1 = new Panel();
             panel2 = new Panel();
-            label1 = new Label();
             lblConnectState = new Label();
+            label1 = new Label();
             navSystem = new IntelligentEquipmentMonitorAndWarningCenter.UControls.UNavItem();
             navDeviceMonitor = new IntelligentEquipmentMonitorAndWarningCenter.UControls.UNavItem();
             navAlarmManger = new IntelligentEquipmentMonitorAndWarningCenter.UControls.UNavItem();
@@ -56,10 +56,11 @@
             uFormHeader1.BorderColor = Color.FromArgb(0, 189, 206);
             uFormHeader1.Font = new Font("Microsoft Sans Serif", 15F, FontStyle.Bold, GraphicsUnit.Point, 134);
             uFormHeader1.Header = "智能设备检测预警";
-            uFormHeader1.Location = new Point(2, 2);
+            uFormHeader1.Location = new Point(1, 1);
+            uFormHeader1.Margin = new Padding(2, 2, 2, 2);
             uFormHeader1.Name = "uFormHeader1";
             uFormHeader1.SecondaryColor = Color.Aqua;
-            uFormHeader1.Size = new Size(1636, 62);
+            uFormHeader1.Size = new Size(1041, 62);
             uFormHeader1.TabIndex = 0;
             uFormHeader1.Text = "uFormHeader1";
             // 
@@ -68,9 +69,10 @@
             panelPage.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panelPage.Font = new Font("Microsoft YaHei UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point, 134);
             panelPage.ForeColor = Color.LightGray;
-            panelPage.Location = new Point(6, 70);
+            panelPage.Location = new Point(4, 67);
+            panelPage.Margin = new Padding(2, 2, 2, 2);
             panelPage.Name = "panelPage";
-            panelPage.Size = new Size(1632, 793);
+            panelPage.Size = new Size(1039, 551);
             panelPage.TabIndex = 1;
             panelPage.SizeChanged += panelPage_SizeChanged;
             // 
@@ -93,11 +95,12 @@
             tableNavBar.Controls.Add(navLiveTrends, 4, 0);
             tableNavBar.Controls.Add(navReportManger, 5, 0);
             tableNavBar.Dock = DockStyle.Bottom;
-            tableNavBar.Location = new Point(0, 878);
+            tableNavBar.Location = new Point(0, 622);
+            tableNavBar.Margin = new Padding(2, 2, 2, 2);
             tableNavBar.Name = "tableNavBar";
             tableNavBar.RowCount = 1;
             tableNavBar.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tableNavBar.Size = new Size(1646, 72);
+            tableNavBar.Size = new Size(1047, 51);
             tableNavBar.TabIndex = 2;
             // 
             // panel3
@@ -105,9 +108,10 @@
             panel3.Controls.Add(label4);
             panel3.Controls.Add(lblLoginUser);
             panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(1416, 3);
+            panel3.Location = new Point(899, 2);
+            panel3.Margin = new Padding(2, 2, 2, 2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(227, 66);
+            panel3.Size = new Size(146, 47);
             panel3.TabIndex = 1;
             // 
             // label4
@@ -115,9 +119,10 @@
             label4.AutoSize = true;
             label4.BackColor = Color.Transparent;
             label4.ForeColor = Color.Red;
-            label4.Location = new Point(18, 20);
+            label4.Location = new Point(11, 14);
+            label4.Margin = new Padding(2, 0, 2, 0);
             label4.Name = "label4";
-            label4.Size = new Size(64, 24);
+            label4.Size = new Size(44, 17);
             label4.TabIndex = 0;
             label4.Text = "用户：";
             // 
@@ -125,9 +130,10 @@
             // 
             lblLoginUser.BackColor = Color.Transparent;
             lblLoginUser.ForeColor = Color.Goldenrod;
-            lblLoginUser.Location = new Point(79, 8);
+            lblLoginUser.Location = new Point(50, 6);
+            lblLoginUser.Margin = new Padding(2, 0, 2, 0);
             lblLoginUser.Name = "lblLoginUser";
-            lblLoginUser.Size = new Size(140, 48);
+            lblLoginUser.Size = new Size(89, 34);
             lblLoginUser.TabIndex = 1;
             lblLoginUser.Text = "admin";
             lblLoginUser.TextAlign = ContentAlignment.MiddleLeft;
@@ -136,9 +142,10 @@
             // 
             panel1.Controls.Add(panel2);
             panel1.Dock = DockStyle.Fill;
-            panel1.Location = new Point(3, 3);
+            panel1.Location = new Point(2, 2);
+            panel1.Margin = new Padding(2, 2, 2, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(257, 66);
+            panel1.Size = new Size(163, 47);
             panel1.TabIndex = 0;
             // 
             // panel2
@@ -147,31 +154,34 @@
             panel2.Controls.Add(label1);
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(0, 0);
+            panel2.Margin = new Padding(2, 2, 2, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(257, 66);
+            panel2.Size = new Size(163, 47);
             panel2.TabIndex = 2;
+            // 
+            // lblConnectState
+            // 
+            lblConnectState.BackColor = Color.Transparent;
+            lblConnectState.ForeColor = Color.DeepSkyBlue;
+            lblConnectState.Location = new Point(50, 6);
+            lblConnectState.Margin = new Padding(2, 0, 2, 0);
+            lblConnectState.Name = "lblConnectState";
+            lblConnectState.Size = new Size(89, 34);
+            lblConnectState.TabIndex = 1;
+            lblConnectState.Text = "未连接";
+            lblConnectState.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.BackColor = Color.Transparent;
             label1.ForeColor = Color.LightGray;
-            label1.Location = new Point(9, 17);
+            label1.Location = new Point(6, 12);
+            label1.Margin = new Padding(2, 0, 2, 0);
             label1.Name = "label1";
-            label1.Size = new Size(64, 24);
+            label1.Size = new Size(44, 17);
             label1.TabIndex = 0;
             label1.Text = "状态：";
-            // 
-            // lblConnectState
-            // 
-            lblConnectState.BackColor = Color.Transparent;
-            lblConnectState.ForeColor = Color.DeepSkyBlue;
-            lblConnectState.Location = new Point(79, 8);
-            lblConnectState.Name = "lblConnectState";
-            lblConnectState.Size = new Size(140, 48);
-            lblConnectState.TabIndex = 1;
-            lblConnectState.Text = "未连接";
-            lblConnectState.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // navSystem
             // 
@@ -181,10 +191,11 @@
             navSystem.Header = "系统配置";
             navSystem.HeaderFont = new Font("Microsoft YaHei UI", 9F);
             navSystem.Icon = Properties.Resources.xitongpeizhi;
-            navSystem.Location = new Point(266, 3);
+            navSystem.Location = new Point(169, 2);
+            navSystem.Margin = new Padding(2, 2, 2, 2);
             navSystem.Name = "navSystem";
             navSystem.SelIcon = Properties.Resources.xitongpeizhi1;
-            navSystem.Size = new Size(224, 66);
+            navSystem.Size = new Size(142, 47);
             navSystem.TabIndex = 2;
             navSystem.Tag = "systemconfig";
             // 
@@ -196,10 +207,11 @@
             navDeviceMonitor.Header = "设备监控";
             navDeviceMonitor.HeaderFont = new Font("Microsoft YaHei UI", 9F);
             navDeviceMonitor.Icon = Properties.Resources.shebeijiance;
-            navDeviceMonitor.Location = new Point(496, 3);
+            navDeviceMonitor.Location = new Point(315, 2);
+            navDeviceMonitor.Margin = new Padding(2, 2, 2, 2);
             navDeviceMonitor.Name = "navDeviceMonitor";
             navDeviceMonitor.SelIcon = Properties.Resources.shebeijiance1;
-            navDeviceMonitor.Size = new Size(224, 66);
+            navDeviceMonitor.Size = new Size(142, 47);
             navDeviceMonitor.TabIndex = 3;
             navDeviceMonitor.Tag = "devicemonitor";
             // 
@@ -212,10 +224,11 @@
             navAlarmManger.Header = "预警管理";
             navAlarmManger.HeaderFont = new Font("Microsoft YaHei UI", 9F);
             navAlarmManger.Icon = Properties.Resources.yujingguanli;
-            navAlarmManger.Location = new Point(726, 3);
+            navAlarmManger.Location = new Point(461, 2);
+            navAlarmManger.Margin = new Padding(2, 2, 2, 2);
             navAlarmManger.Name = "navAlarmManger";
             navAlarmManger.SelIcon = Properties.Resources.yujingguanli1;
-            navAlarmManger.Size = new Size(224, 66);
+            navAlarmManger.Size = new Size(142, 47);
             navAlarmManger.TabIndex = 4;
             navAlarmManger.Tag = "alarmmanger";
             // 
@@ -227,10 +240,11 @@
             navLiveTrends.Header = "实时曲线";
             navLiveTrends.HeaderFont = new Font("Microsoft YaHei UI", 9F);
             navLiveTrends.Icon = Properties.Resources.shishiquxian;
-            navLiveTrends.Location = new Point(956, 3);
+            navLiveTrends.Location = new Point(607, 2);
+            navLiveTrends.Margin = new Padding(2, 2, 2, 2);
             navLiveTrends.Name = "navLiveTrends";
             navLiveTrends.SelIcon = null;
-            navLiveTrends.Size = new Size(224, 66);
+            navLiveTrends.Size = new Size(142, 47);
             navLiveTrends.TabIndex = 5;
             navLiveTrends.Tag = "livetrends";
             // 
@@ -242,24 +256,26 @@
             navReportManger.Header = "报表统计";
             navReportManger.HeaderFont = new Font("Microsoft YaHei UI", 9F);
             navReportManger.Icon = Properties.Resources.tongjibaobiao;
-            navReportManger.Location = new Point(1186, 3);
+            navReportManger.Location = new Point(753, 2);
+            navReportManger.Margin = new Padding(2, 2, 2, 2);
             navReportManger.Name = "navReportManger";
             navReportManger.SelIcon = Properties.Resources.tongjibaobiao1;
-            navReportManger.Size = new Size(224, 66);
+            navReportManger.Size = new Size(142, 47);
             navReportManger.TabIndex = 6;
             navReportManger.Tag = "reports";
             navReportManger.Load += navReportManger_Load;
             // 
             // FrmMain
             // 
-            AutoScaleDimensions = new SizeF(11F, 24F);
+            AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(25, 55, 87);
-            ClientSize = new Size(1646, 950);
+            ClientSize = new Size(1047, 673);
             Controls.Add(tableNavBar);
             Controls.Add(panelPage);
             Controls.Add(uFormHeader1);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(2, 2, 2, 2);
             Name = "FrmMain";
             Text = "FrmMain";
             FormClosing += FrmMain_FormClosing;

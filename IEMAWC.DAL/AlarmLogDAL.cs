@@ -1,4 +1,5 @@
 ﻿using Helper;
+using IEMAWC.DAL.Helper;
 using System;
 using System.Data;
 using System.Data.SQLite;
@@ -73,6 +74,7 @@ namespace IEMAWC.DAL
         // 查询总的报警数量
         public int GetTotalCount(int alarmType, List<string> states, int infoType, string startStr, string endStr)
         {
+            /*
             string sql = "SELECT COUNT(1) FROM AlarmLogInfos WHERE AlarmType = @AlarmType";
             List<SQLiteParameter> paras = new List<SQLiteParameter>
             {
@@ -103,6 +105,14 @@ namespace IEMAWC.DAL
 
             object result = SQLiteHelper.ExecuteScalar(sql, paras.ToArray());
             return result != null ? Convert.ToInt32(result) : 0;
+            */
+            int count = SQLHelper.Instance.Queryable<AlarmLog>().Where(a => a.AlarmType == alarmType
+                && (states == null || states.Count == 0 || states.Contains(a.AlarmState))
+                && (infoType == -1 || a.InfoType == infoType)
+                && (string.IsNullOrEmpty(startStr) || DateTime.Parse(a.AlarmTime) >= DateTime.Parse(startStr))
+                && (string.IsNullOrEmpty(endStr) || DateTime.Parse(a.AlarmTime) <= DateTime.Parse(endStr)))
+                .Count();
+            return count;
         }
 
         /// <summary>
@@ -110,6 +120,7 @@ namespace IEMAWC.DAL
         /// </summary>
         public DataTable GetList(int alarmType, List<string> states, int infoType, string startStr, string endStr, int pageIndex, int pageSize)
         {
+            /*
             string sql = @"
             SELECT 
                 LogId, 
@@ -166,6 +177,17 @@ namespace IEMAWC.DAL
             paras.Add(new SQLiteParameter("@Offset", (pageIndex - 1) * pageSize));
 
             return SQLiteHelper.GetDataTable(sql, paras.ToArray());
+            */
+            DataTable dataTable = SQLHelper.Instance.Queryable<AlarmLog>().Where(a => a.AlarmType == alarmType
+                && (states == null || states.Count == 0 || states.Contains(a.AlarmState))
+                && (infoType == -1 || a.InfoType == infoType)
+                && (string.IsNullOrEmpty(startStr) || DateTime.Parse(a.AlarmTime) >= DateTime.Parse(startStr))
+                && (string.IsNullOrEmpty(endStr) || DateTime.Parse(a.AlarmTime) <= DateTime.Parse(endStr)))
+                .OrderByDescending(a => a.AlarmTime)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToDataTable();
+            return dataTable;
         }
 
         /// <summary>

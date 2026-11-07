@@ -10,11 +10,12 @@ namespace IEMAWC.DAL.Helper
 {
     public class SQLHelper
     {
-        //饿汉式单例模式
-        //public static SqlHelper Instance { get; } = new SqlHelper();
+        private SQLHelper() { }
         //懒汉式单例模式
-        private static SqlSugarClient _instance;
+        private static SqlSugarClient? _instance;
         private static readonly object _lock = new object();
+        
+        // 获取 SqlSugarClient 实例
         public static SqlSugarClient Instance
         {
             get
@@ -50,7 +51,8 @@ namespace IEMAWC.DAL.Helper
                 return _instance;
             }
         }
-
+        
+        //根据配置文件获取当前数据库类型
         private static DbType GetCurrentDbType()
         {
             var value = ConfigurationManager.AppSettings["DbProvider"];
@@ -66,7 +68,7 @@ namespace IEMAWC.DAL.Helper
 
             return DbType.Sqlite;
         }
-
+        //根据数据库类型获取对应的连接字符串
         public static string GetConnectionString(DbType dbType)
         {
             switch (dbType)
