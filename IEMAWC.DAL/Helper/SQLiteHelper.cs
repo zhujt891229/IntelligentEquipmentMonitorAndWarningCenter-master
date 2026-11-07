@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using static System.Net.Mime.MediaTypeNames;
+using System.Configuration;
 
 namespace Helper
 {
@@ -33,6 +34,7 @@ namespace Helper
         {
             get
             {
+                /*
                 string connStr = "";
                 XmlDocument cfgDoc = new XmlDocument();
 
@@ -52,6 +54,8 @@ namespace Helper
                         connStr = addElem.GetAttribute("connectionString");
                     }
                 }
+                */
+                string connStr = ConfigurationManager.AppSettings["PlcIp"];
                 return connStr;
             }
         }
