@@ -1,6 +1,7 @@
 ﻿using Base;
 using Helper;
 using IEMAWC.DAL.Base;
+using IEMAWC.DAL.Helper;
 using IntelligentEquipmentMonitorAndWarningCenter;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace IEMAWC.DAL
         //获取所有的参数
         public List<ParaInfo> GetParaDatas()
         {
+            /*
             string cols = "ID,ParaName,FunctionCode,Address,DataType,DCount,Unit,Note,ParaType";
             string sql = $"select {cols}  from ParaInfos ";
             SQLiteDataReader dr = SQLiteHelper.ExecuteReader(sql);
@@ -24,20 +26,26 @@ namespace IEMAWC.DAL
 
             paraList = DbConvert.DataReaderToList<ParaInfo>(dr, cols);
             return paraList;
-
+            */
+            return SQLHelper.Instance.Queryable<ParaInfo>().ToList();
         }
 
         //判断参数名是否存在
         public bool ExistParaName(string paraName)
         {
+            /*
             string strWhere = "ParaName=@ParaName";
             SQLiteParameter pName = new SQLiteParameter("@ParaName", paraName);
             return SQLiteQueryHelper.ExistByWhere("ParaInfos",strWhere,pName);
+            */
+            List<ParaInfo> paraInfos = SQLHelper.Instance.Queryable<ParaInfo>().Where(it => it.ParaName == paraName).ToList();
+            return paraInfos.Count > 0;
         }
 
         //根据功能码和寄存器地址判断地址是否存在
         public bool ExistByFuctionCodeAndAddress(byte functionCode,ushort address)
         {
+            /*
             string strWhere = "FunctionCode=@functionCode and Address=@address";
             SQLiteParameter[] paras =
             {
@@ -45,11 +53,15 @@ namespace IEMAWC.DAL
                 new SQLiteParameter("address",address)
             };
             return SQLiteQueryHelper.ExistByWhere("paraInfos",strWhere,paras);
+            */
+            List<ParaInfo> paraInfos = SQLHelper.Instance.Queryable<ParaInfo>().Where(it=>it.FunctionCode== functionCode && it.Address == address).ToList();
+            return paraInfos.Count > 0;
         }
 
         //添加新的参数信息
         public int AddPara(ParaInfo para)
         {
+            /*
             string sql = "insert into ParaInfos (ParaName,FunctionCode,Address,DataType,DCount,Unit,Note,ParaType) values " +
                 "(@ParaName,@FunctionCode,@Address,@DataType,@DCount,@Unit,@Note,@ParaType);select last_insert_rowid()";
             SQLiteParameter[] paras =
@@ -69,11 +81,15 @@ namespace IEMAWC.DAL
                 return Convert.ToInt32(oldresult);
             }
             return 0;
+            */
+            return SQLHelper.Instance.Insertable<ParaInfo>(para).ExecuteCommand();
+
         }
 
         //修改参数信息
         public int EditPara(ParaInfo para)
         {
+            /*
             string sql = "update ParaInfos set ParaName=@ParaName,FunctionCode=@FunctionCode,Address=@Address,DataType=@DataType,DCount=@DCount,Unit=@Unit,Note=@Note,ParaType=@ParaType where Id=@Id";
             SQLiteParameter[] paras =
             {
@@ -89,22 +105,31 @@ namespace IEMAWC.DAL
             };
             int count = SQLiteHelper.ExecuteNonQuery(sql, paras);
             return count;
+            */
+            return SQLHelper.Instance.Updateable<ParaInfo>(para).ExecuteCommand();
         }
 
 
         //删除多条参数信息，通过id
         public bool DeleteParas(List<int>idList)
         {
+            /*
             string idStr = string.Join(",", idList);
             string sql = $"delete from ParaInfos where Id in ({idStr})";
             return SQLiteHelper.ExecuteTrans(new List<string>() { sql });
+            */
+            int v = SQLHelper.Instance.Deleteable<ParaInfo>(idList).ExecuteCommand();
+            return v == idList.Count;
         }
 
         //删除单个参数信息
         public int DeletePara(int id) {
+            /*
             string sql = $"delete from ParaInfos where id = {id}";
             int count = SQLiteHelper.ExecuteNonQuery(sql);
             return count;
+            */
+            return SQLHelper.Instance.Deleteable<ParaInfo>().Where(it=>it.Id==id).ExecuteCommand();
         }
 
     }

@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 using Helper;
+using IEMAWC.DAL.Helper;
 
 namespace IEMAWC.DAL
 {
@@ -9,14 +10,17 @@ namespace IEMAWC.DAL
     {
         public int GetTotalCount(bool isAlarmReport, string reportType, string queryDate)
         {
+            
             string tableName = isAlarmReport ? "AlarmLogInfos" : "DataInfos"; // 【已修改】
             string timeColumn = isAlarmReport ? "AlarmTime" : "CollectionTime";
 
             string timeCondition = GetTimeCondition(timeColumn, reportType, queryDate);
             string sql = $"SELECT COUNT(1) FROM {tableName} WHERE 1=1 {timeCondition}";
-
+            /*
             object result = SQLiteHelper.ExecuteScalar(sql);
             return result != null && result != DBNull.Value ? Convert.ToInt32(result) : 0;
+            */
+            return SQLHelper.Instance.Queryable<dynamic>().AS(tableName).Where(timeCondition).Count();
         }
 
         public DataTable GetPageData(bool isAlarmReport, string reportType, string queryDate, int pageIndex, int pageSize)

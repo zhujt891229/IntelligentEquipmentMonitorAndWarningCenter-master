@@ -11,7 +11,7 @@ namespace IEMAWC.DAL
     {
         public int InsertAlarmToDatabase(AlarmLog alarm)
         {
-
+            /*
             string sql = @"INSERT INTO AlarmLogInfos 
                        (InfoType, AlarmTime, AlarmType, AlarmState, AlarmValue, AlarmNote)
                        VALUES 
@@ -28,6 +28,8 @@ namespace IEMAWC.DAL
             };
 
             return SQLiteHelper.ExecuteNonQuery(sql, paras);
+            */
+            return SQLHelper.Instance.Insertable<AlarmLog>(alarm).ExecuteCommand();
         }
 
         //根据条件查询合法的数据
@@ -195,6 +197,7 @@ namespace IEMAWC.DAL
         /// </summary>
         public int DeleteByIds(List<long> ids)
         {
+            /*
             if (ids == null || ids.Count == 0) return 0;
 
             // 将 List 转换成 SQL 的 IN 格式，例如: "1,2,3"
@@ -206,6 +209,8 @@ namespace IEMAWC.DAL
             // 注意：如果你的 SQLiteHelper.ExecuteNonQuery 需要传空参数数组，请写成：
             return SQLiteHelper.ExecuteNonQuery(sql, new SQLiteParameter[] { });
             // 或者如果你之前的方法有重载，直接像你截图里那样传即可
+            */
+            return SQLHelper.Instance.Deleteable<AlarmLog>().Where(it => ids.Contains(it.LogId)).ExecuteCommand();
         }
     }
 }

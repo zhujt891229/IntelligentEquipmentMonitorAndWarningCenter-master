@@ -22,6 +22,7 @@ namespace IEMAWC.DAL
         /// <param name="info">要插入的数据实体。</param>
         /// <returns>新插入记录的自增 Id；失败返回 -1。</returns>
         public int InsertDataToDataInfos(DataInfo info) {
+            /*
             string sql = @"INSERT INTO DataInfos 
                            (CollectionTime, Temperature, Humidity, Brightness) 
                            VALUES 
@@ -39,6 +40,8 @@ namespace IEMAWC.DAL
                 return -1;
 
             return Convert.ToInt32(result);
+            */
+            return SQLHelper.Instance.Insertable<DataInfo>(info).ExecuteCommand();
         }
 
         //获得最新日期的前十条数据
@@ -47,6 +50,7 @@ namespace IEMAWC.DAL
         /// </summary>
         public BindingList<DataInfo> GetTenNewDataFromDataInfos()
         {
+            /*
             string sql = @"SELECT Id, CollectionTime, Temperature, Humidity, Brightness 
                            FROM DataInfos 
                            ORDER BY CollectionTime DESC, Id DESC 
@@ -54,6 +58,9 @@ namespace IEMAWC.DAL
 
             DataTable dt = SQLiteHelper.GetDataTable(sql);
             return ConvertToDataInfoList(dt);
+            */
+            List<DataInfo> dataInfos = SQLHelper.Instance.Queryable<DataInfo>().Take(10).OrderBy(it=>DateTime.Parse(it.CollectionTime),OrderByType.Desc).ToList();
+            return new BindingList<DataInfo>(dataInfos);
         }
 
         /// <summary>
